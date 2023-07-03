@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 
 import axios from "axios";
+import { Auth } from "aws-amplify";
 
 function TodoList({userInfo}:{userInfo:any}) {
 
@@ -14,7 +15,9 @@ function TodoList({userInfo}:{userInfo:any}) {
     fetchTodos();
   }, []);
 
-
+  const logoutDir = async () => {
+    await Auth.signOut();
+  }
 
   const fetchTodos = async () => {
     try {
@@ -119,7 +122,7 @@ function TodoList({userInfo}:{userInfo:any}) {
 
   return (
 <>
-{userInfo.signInUserSession.idToken.jwtToken}
+  <button className="m-4 border-2 rounded-lg" onClick={logoutDir}>Logout</button>
     <div className="flex flex-col items-center  h-screen p-20 gap-y-10">
       <h1 className="text-3xl">Todo List</h1>
       <div className="space-x-3">

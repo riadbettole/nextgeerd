@@ -14,7 +14,7 @@ Amplify.configure({
         'email',
         'openid',
       ],
-      redirectSignIn: 'http://localhost:3000/',
+      redirectSignIn: 'https://main.d2qvh428tc0nf9.amplifyapp.com/',
       responseType: 'code',
     },
   },

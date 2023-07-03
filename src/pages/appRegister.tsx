@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { Amplify, Auth } from 'aws-amplify';
 
-import awsExports from './aws-exports';
+import awsExports from '../component/aws-exports';
 
 Amplify.configure(awsExports);
 

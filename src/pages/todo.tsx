@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from "react";
-// import { MyContext } from "./index";
+import { useState, useEffect } from "react";
+
 
 import axios from "axios";
 
@@ -8,12 +8,12 @@ function TodoList({userInfo}:{userInfo:any}) {
   const [todos, setTodos] = useState<{ text: string }[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  // const [todoPage, setTodoPage] = useState(false);
+
 
   useEffect(() => {
     fetchTodos();
   }, []);
-  // }, [todos]);
+
 
 
   const fetchTodos = async () => {
@@ -116,8 +116,6 @@ function TodoList({userInfo}:{userInfo:any}) {
       </ul>
     </div>
   );
-
-//  useEffect(()=>{console.log(userInfo)})
 
   return (
 <>

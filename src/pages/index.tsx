@@ -1,4 +1,4 @@
-import { Amplify, Auth, Hub } from 'aws-amplify';
+import { Auth, Hub } from 'aws-amplify';
 import AppRegister from './appRegister';
 import { useEffect, useState } from 'react';
 import TodoList from './todo';

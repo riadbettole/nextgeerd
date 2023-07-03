@@ -15,6 +15,7 @@ Amplify.configure({
         'openid',
       ],
       redirectSignIn: 'https://main.d2qvh428tc0nf9.amplifyapp.com/',
+      redirectSignOut:'https://main.d2qvh428tc0nf9.amplifyapp.com/',
       responseType: 'code',
     },
   },

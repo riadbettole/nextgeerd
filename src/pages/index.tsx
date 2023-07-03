@@ -1,7 +1,7 @@
 import { Auth, Hub } from 'aws-amplify';
-import AppRegister from './appRegister';
+import AppRegister from '../component/appRegister';
 import { useEffect, useState } from 'react';
-import TodoList from './todo';
+import TodoList from '../component/todo';
 
 
 

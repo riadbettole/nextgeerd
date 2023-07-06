@@ -1,32 +1,31 @@
 import axios from "axios";
 import { useState } from "react";
 
-import { Amplify, Auth } from 'aws-amplify';
+import { Amplify, Auth } from "aws-amplify";
 
-import awsExports from './aws-exports';
+import awsExports from "./aws-exports";
 
 Amplify.configure(awsExports);
 
-
 export default function AppRegister() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [SSO, setSSO] = useState(false);
+  const [PSW, setPSW] = useState(false);
 
   const [provider, setProvider] = useState("");
 
-  const onSubmit = async (e:any) => {
-      e.preventDefault();
-      setLoading(true);
-      try{
-        await Auth.signIn(email, password)
-      }catch(err){
-        console.log(err)
-      }
-
-  }
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const resp = await Auth.signIn(email, password);
+      console.log(resp);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleEmail = (e: any) => {
     setEmail(e.target.value);
@@ -45,27 +44,104 @@ export default function AppRegister() {
     const url = "https://registergeerd.hasura.app/api/rest/checkOrg/" + domain;
     const header = {
       headers: {
-        "x-hasura-role":
-          "anonymus",
+        "x-hasura-role": "anonymus",
       },
     };
 
     try {
-      await axios.get(url, header).then((data)=> {
-        console.log(data)
-        setProvider(data.data.organisations[0].data)
+      await axios.get(url, header).then((data) => {
+        console.log(data);
+        setProvider(data.data.organisations[0].data);
         setLoading(false);
       });
-      
-      
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
 
+  const changeCode = (e: any) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setCode(e.target.value);
+  };
+
+  const [cognitoUser, setCognitoUser] = useState();
+  const [challenge, setChallenge] = useState(false);
+  const [code, setCode] = useState("");
+
+  const checkEmailPswLess = async (e: any) => {
+    try {
+      setLoading(true);
+      await Auth.signIn(email).then((res) => {
+        console.log(res);
+        setCognitoUser(res);
+        setLoading(false);
+        setChallenge(true);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const changeChallenge = () => {
+    answerCustomChallenge();
+  };
+
+  const ChallengeForm = (
+    <form className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium leading-6 text-gray-900">
+          Code
+        </label>
+        <div className="mt-2">
+          <input
+            onChange={changeCode}
+            id="code"
+            name="code"
+            required
+            className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={changeChallenge}
+          type="submit"
+          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Next
+        </button>
+      </div>
+    </form>
+  );
+
+  const answerCustomChallenge = async () => {
+    console.log(code);
+    try {
+      const x = await Auth.sendCustomChallengeAnswer(cognitoUser, code).then(
+        () => {
+          console.log("test");
+        }
+      );
+      try {
+        let x = await Auth.currentSession();
+        console.log(x);
+      } catch {
+        console.log("Apparently the user did not enter the right code");
+      }
+      console.log(x);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const changeInterface = () => {
     setSSO(true);
+  };
+
+  const changeInterfacePswLess = () => {
+    setPSW(true);
   };
 
   const LoadingForm = (
@@ -113,7 +189,6 @@ export default function AppRegister() {
       </div>
       <div>
         <button
-          onChange={checkEmail}
           type="submit"
           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
@@ -230,7 +305,7 @@ export default function AppRegister() {
                 </span>
               </div>
             </div>
-            <div className="mt-6 ">
+            <div className="mt-6 space-y-3">
               <button
                 onClick={changeInterface}
                 type="submit"
@@ -238,16 +313,29 @@ export default function AppRegister() {
               >
                 Single Sign-On
               </button>
+              <button
+                onClick={changeInterfacePswLess}
+                type="submit"
+                className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 border-2 shadow-sm hover:border-2 hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                PasswordLess
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-const providerComp = (
-  <button className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 border-2 shadow-sm hover:border-2 hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-  onClick={() => Auth.federatedSignIn({customProvider: provider})}>Open Azure</button>
-)
+
+  const providerComp = (
+    <button
+      className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 border-2 shadow-sm hover:border-2 hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => Auth.federatedSignIn({ customProvider: provider })}
+    >
+      Open Azure
+    </button>
+  );
+  
   const SSOregister = (
     <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
       <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -258,19 +346,85 @@ const providerComp = (
             alt="Your Company"
           />
           <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Sign in to your account with a federated account
           </h2>
         </div>
         <div className="mt-10">
-          <div>{loading ? LoadingForm : provider?providerComp:LoginFormSSO}</div>
+          <div>
+            {loading ? LoadingForm : provider ? providerComp : LoginFormSSO}
+          </div>
         </div>
       </div>
     </div>
   );
 
+  const LoginFormPswLess = (
+    <form className="space-y-6">
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Email address
+        </label>
+        <div className="mt-2">
+          <input
+            onChange={handleEmail}
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={checkEmailPswLess}
+          type="submit"
+          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Next
+        </button>
+      </div>
+    </form>
+  );
+
+  const PswLessregister = (
+    <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div className="mx-auto w-full max-w-sm lg:w-96">
+        <div>
+          <img
+            className="h-10 w-auto"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            alt="Your Company"
+          />
+          <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            Sign in to your account without a password
+          </h2>
+        </div>
+        <div className="mt-10">
+          <div>
+            {loading
+              ? LoadingForm
+              : challenge
+              ? ChallengeForm
+              : LoginFormPswLess}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  const close = () => {
+    setPSW(false);
+    setSSO(false);
+  };
   return (
     <div className="flex min-h-full flex-1 h-[100vh]">
-      {SSO ? SSOregister : NormalRegister}
+      <button onClick={close}>X</button>
+      {SSO || PSW ? (PSW ? PswLessregister : SSOregister) : NormalRegister}
+      {/* {PswLessregister} */}
       <div className="relative hidden w-0 flex-1 lg:block">
         <img
           className="absolute inset-0 h-full w-full object-cover"

@@ -62,7 +62,6 @@ function TodoList({userInfo}:{userInfo:any}) {
         if (response.data.insert_todos.affected_rows === 1) {
           setTodos([...todos, newTodo]);
           setInputValue("");
-          window.location.reload();
         }
       } catch (error) {
         console.error(error);
@@ -91,7 +90,7 @@ function TodoList({userInfo}:{userInfo:any}) {
   };
 
   const todoPageComp = (
-    <div className="flex flex-col items-center  h-screen p-20 gap-y-10">
+      <div className="flex flex-col items-center  h-screen p-20 gap-y-10">
       <h1 className="text-3xl">Todo List</h1>
       <div className="space-x-3">
         <input
@@ -105,8 +104,8 @@ function TodoList({userInfo}:{userInfo:any}) {
         </button>
       </div>
       <ul>
-        {todos.map((todo: any) => (
-          <li className="flex gap-5" key={todo.id}>
+        {todos.map((todo: any, index: number) => (
+          <li className="flex gap-5" key={index}>
             <p className="border-2 rounded">{todo.text}</p>
             <button
               className=" bg-red-500 rounded p-1 text-white"
@@ -123,33 +122,7 @@ function TodoList({userInfo}:{userInfo:any}) {
   return (
 <>
   <button className="m-4 border-2 rounded-lg" onClick={logoutDir}>Logout</button>
-    <div className="flex flex-col items-center  h-screen p-20 gap-y-10">
-      <h1 className="text-3xl">Todo List</h1>
-      <div className="space-x-3">
-        <input
-          type="text"
-          value={inputValue}
-          className="border-2"
-          onChange={handleInputChange}
-        />
-        <button className="bg-blue-200 rounded" onClick={handleAddTodo}>
-          Add Todo
-        </button>
-      </div>
-      <ul>
-        {todos.map((todo: any) => (
-          <li className="flex gap-5" key={todo.id}>
-            <p className="border-2 rounded">{todo.text}</p>
-            <button
-              className=" bg-red-500 rounded p-1 text-white"
-              onClick={() => handleDeleteTodo(todo.id)}
-            >
-              X
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    {todoPageComp}
     </>
   );
 }

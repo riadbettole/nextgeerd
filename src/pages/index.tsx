@@ -27,17 +27,16 @@ function Home() {
         setUser(amplifyUser);
       }
     } catch (err) {
+      console.log(err)
         setUser(null);
     }
   }
 
 
   return (
-    
     <>
       {user ? <TodoList userInfo = {user} /> : <AppRegister />}
       </>
-   
   );
 }
 

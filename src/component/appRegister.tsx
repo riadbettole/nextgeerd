@@ -13,8 +13,31 @@ export default function AppRegister() {
   const [loading, setLoading] = useState(false);
   const [SSO, setSSO] = useState(false);
   const [PSW, setPSW] = useState(false);
-
   const [provider, setProvider] = useState("");
+  const [cognitoUser, setCognitoUser] = useState();
+  const [challenge, setChallenge] = useState(false);
+  const [OTP, set_OTP] = useState("");
+
+  const handleEmail = (e: any) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePassword = (e: any) => {
+    setPassword(e.target.value);
+  };
+
+  const changeInterface = () => {
+    setSSO(true);
+  };
+
+  const changeInterfacePswLess = () => {
+    setPSW(true);
+  };
+
+  const close = () => {
+    setPSW(false);
+    setSSO(false);
+  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -25,14 +48,6 @@ export default function AppRegister() {
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const handleEmail = (e: any) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePassword = (e: any) => {
-    setPassword(e.target.value);
   };
 
   const checkEmail = async (e: any) => {
@@ -60,43 +75,37 @@ export default function AppRegister() {
     }
   };
 
-  const changeCode = (e: any) => {
-    e.preventDefault();
-    console.log(e.target.value);
-    setCode(e.target.value);
-  };
-
-  const [cognitoUser, setCognitoUser] = useState();
-  const [challenge, setChallenge] = useState(false);
-  const [code, setCode] = useState("");
-
   const checkEmailPswLess = async (e: any) => {
     try {
       setLoading(true);
-      await Auth.signIn(email).then((res) => {
-        console.log(res);
-        setCognitoUser(res);
-        setLoading(false);
-        setChallenge(true);
-      });
+      const res = await Auth.signIn(email);
+      console.log(res);
+      setCognitoUser(res);
+      setLoading(false);
+      setChallenge(true);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const changeChallenge = () => {
-    answerCustomChallenge();
+  const OTPlogin = async () => {
+    try {
+      const res = await Auth.sendCustomChallengeAnswer(cognitoUser, OTP);
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const ChallengeForm = (
-    <form className="space-y-6">
+    <div className="space-y-6">
       <div>
         <label className="block text-sm font-medium leading-6 text-gray-900">
           Code
         </label>
         <div className="mt-2">
           <input
-            onChange={changeCode}
+            onChange={(e) => set_OTP(e.target.value)}
             id="code"
             name="code"
             required
@@ -106,43 +115,14 @@ export default function AppRegister() {
       </div>
       <div>
         <button
-          onClick={changeChallenge}
-          type="submit"
+          onClick={OTPlogin}
           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Next
         </button>
       </div>
-    </form>
+    </div>
   );
-
-  const answerCustomChallenge = async () => {
-    console.log(code);
-    try {
-      const x = await Auth.sendCustomChallengeAnswer(cognitoUser, code).then(
-        () => {
-          console.log("test");
-        }
-      );
-      try {
-        let x = await Auth.currentSession();
-        console.log(x);
-      } catch {
-        console.log("Apparently the user did not enter the right code");
-      }
-      console.log(x);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const changeInterface = () => {
-    setSSO(true);
-  };
-
-  const changeInterfacePswLess = () => {
-    setPSW(true);
-  };
 
   const LoadingForm = (
     <div role="status">
@@ -196,6 +176,38 @@ export default function AppRegister() {
         </button>
       </div>
     </form>
+  );
+
+  const LoginFormPswLess = (
+    <div className="space-y-6">
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Email address
+        </label>
+        <div className="mt-2">
+          <input
+            onChange={handleEmail}
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+      </div>
+      <div>
+        <button
+          onClick={checkEmailPswLess}
+          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Next
+        </button>
+      </div>
+    </div>
   );
 
   const LoginForm = (
@@ -335,7 +347,7 @@ export default function AppRegister() {
       Open Azure
     </button>
   );
-  
+
   const SSOregister = (
     <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
       <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -356,39 +368,6 @@ export default function AppRegister() {
         </div>
       </div>
     </div>
-  );
-
-  const LoginFormPswLess = (
-    <form className="space-y-6">
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium leading-6 text-gray-900"
-        >
-          Email address
-        </label>
-        <div className="mt-2">
-          <input
-            onChange={handleEmail}
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          />
-        </div>
-      </div>
-      <div>
-        <button
-          onClick={checkEmailPswLess}
-          type="submit"
-          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Next
-        </button>
-      </div>
-    </form>
   );
 
   const PswLessregister = (
@@ -416,15 +395,12 @@ export default function AppRegister() {
       </div>
     </div>
   );
-  const close = () => {
-    setPSW(false);
-    setSSO(false);
-  };
+
   return (
     <div className="flex min-h-full flex-1 h-[100vh]">
       <button onClick={close}>X</button>
       {SSO || PSW ? (PSW ? PswLessregister : SSOregister) : NormalRegister}
-      {/* {PswLessregister} */}
+
       <div className="relative hidden w-0 flex-1 lg:block">
         <img
           className="absolute inset-0 h-full w-full object-cover"

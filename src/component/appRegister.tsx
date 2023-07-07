@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import { Amplify, Auth } from "aws-amplify";
-
+import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth";
 import awsExports from "./aws-exports";
 
 Amplify.configure(awsExports);
@@ -332,6 +332,16 @@ export default function AppRegister() {
               >
                 PasswordLess
               </button>
+              <button
+                className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 border-2 shadow-sm hover:border-2 hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() =>
+                  Auth.federatedSignIn({
+                    provider: CognitoHostedUIIdentityProvider.Google,
+                  })
+                }
+              >
+                Google
+              </button>
             </div>
           </div>
         </div>
@@ -396,11 +406,23 @@ export default function AppRegister() {
     </div>
   );
 
+  const googleComp = (
+    <button
+      className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 border-2 shadow-sm hover:border-2 hover:border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() =>
+        Auth.federatedSignIn({
+          provider: CognitoHostedUIIdentityProvider.Google,
+        })
+      }
+    >
+      Open Azure
+    </button>
+  );
+
   return (
     <div className="flex min-h-full flex-1 h-[100vh]">
       <button onClick={close}>X</button>
       {SSO || PSW ? (PSW ? PswLessregister : SSOregister) : NormalRegister}
-
       <div className="relative hidden w-0 flex-1 lg:block">
         <img
           className="absolute inset-0 h-full w-full object-cover"

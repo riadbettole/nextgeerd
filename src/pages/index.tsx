@@ -2,7 +2,7 @@ import { Auth, Hub } from 'aws-amplify';
 import AppRegister from '../component/appRegister';
 import { useEffect, useState } from 'react';
 import TodoList from '../component/todo';
-
+import Head from 'next/head'
 
 
 function Home() {
@@ -32,9 +32,24 @@ function Home() {
     }
   }
 
+  
 
   return (
     <>
+    <Head>
+    <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "hx346mghtw");
+          `,
+          }}
+        />
+    </Head>
       {user ? <TodoList userInfo = {user} /> : <AppRegister />}
       </>
   );

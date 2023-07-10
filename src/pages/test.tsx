@@ -1,4 +1,4 @@
-import { event } from "../../lib/ga";
+// import { event } from "../../lib/ga";
 
 function Test() {
 

@@ -1,14 +1,11 @@
-import { Auth, Hub } from 'aws-amplify';
-import AppRegister from '../component/appRegister';
-import { useEffect, useState } from 'react';
-import TodoList from '../component/todo';
-import Head from 'next/head'
-
+import { Auth, Hub } from "aws-amplify";
+import AppRegister from "../component/appRegister";
+import { useEffect, useState } from "react";
+import TodoList from "../component/todo";
+import Head from "next/head";
 
 function Home() {
-
-
-  const [user,setUser] = useState<any | null>();
+  const [user, setUser] = useState<any | null>();
 
   useEffect(() => {
     checkUser();
@@ -27,17 +24,28 @@ function Home() {
         setUser(amplifyUser);
       }
     } catch (err) {
-      console.log(err)
-        setUser(null);
+      console.log(err);
+      setUser(null);
     }
   }
 
-  
-
   return (
     <>
-    <Head>
-    <script
+      <Head>
+        {/* <!-- Google tag (gtag.js) --> */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6D3FB43DHN"/>
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-6D3FB43DHN');`,
+          }}
+        />
+        <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
             __html: `
@@ -49,11 +57,10 @@ function Home() {
           `,
           }}
         />
-    </Head>
-      {user ? <TodoList userInfo = {user} /> : <AppRegister />}
-      </>
+      </Head>
+      {user ? <TodoList userInfo={user} /> : <AppRegister />}
+    </>
   );
 }
 
 export default Home;
-

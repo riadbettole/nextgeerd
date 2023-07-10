@@ -23,7 +23,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
   return (
     <>
-      <Component {...pageProps} />
       <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-6D3FB43DHN"
@@ -36,6 +35,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         gtag('config', 'G-6D3FB43DHN');
     `}
       </Script>
+      <Component {...pageProps} />
     </>
   );
 };

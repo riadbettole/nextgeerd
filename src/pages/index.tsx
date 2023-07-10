@@ -35,9 +35,9 @@ function Home() {
       <Head>
         {/* <!-- Google tag (gtag.js) --> */}
 
-        <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
 
-        <Script strategy="lazyOnload">
+        <Script>
                 {`
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
@@ -48,9 +48,9 @@ function Home() {
                 `}
             </Script>
 
-        <Script strategy="lazyOnload">
+        <Script>
               {`
-                function(c,l,a,r,i,t,y){
+                (function(c,l,a,r,i,t,y){
                   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);

@@ -1,3 +1,9 @@
+declare global {
+    interface Window {
+      gtag?: any;
+    }
+  }
+
 export const pageview = (url: any) => {
     if (window !== undefined) {
       window.gtag("config", "G-6D3FB43DHN", {

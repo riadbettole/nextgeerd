@@ -5,7 +5,7 @@ function Test() {
   return (
     <>
         test test
-        <button
+        {/* <button
         onClick={() =>
           event({
             action: "search",
@@ -16,7 +16,7 @@ function Test() {
         }
       >
         Click me
-      </button>
+      </button> */}
     </>
   );
 }

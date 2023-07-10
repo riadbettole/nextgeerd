@@ -3,6 +3,7 @@ import AppRegister from "../component/appRegister";
 import { useEffect, useState } from "react";
 import TodoList from "../component/todo";
 import Head from "next/head";
+import Script from "next/script";
 
 function Home() {
   const [user, setUser] = useState<any | null>();
@@ -33,7 +34,20 @@ function Home() {
     <>
       <Head>
         {/* <!-- Google tag (gtag.js) --> */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6D3FB43DHN"/>
+        {/* <Script src="https://www.googletagmanager.com/gtag/js?id=G-6D3FB43DHN" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-6D3FB43DHN');
+        `}
+        </Script> */}
+        {/* <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-6D3FB43DHN"
+        />
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
@@ -44,7 +58,7 @@ function Home() {
 
             gtag('config', 'G-6D3FB43DHN');`,
           }}
-        />
+        /> */}
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{

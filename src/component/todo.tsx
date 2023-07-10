@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 import { Auth } from "aws-amplify";
+import Link from "next/link";
 
 function TodoList({userInfo}:{userInfo:any}) {
 
@@ -121,6 +122,7 @@ function TodoList({userInfo}:{userInfo:any}) {
 
   return (
 <>
+  <Link href="/test">Go to page 2</Link>
   <button className="m-4 border-2 rounded-lg" onClick={logoutDir}>Logout</button>
     {todoPageComp}
     </>

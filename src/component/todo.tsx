@@ -26,6 +26,7 @@ function TodoList({userInfo}:{userInfo:any}) {
         "https://registergeerd.hasura.app/api/rest/todos/",
         {
           headers: {
+            "x-hasura-role":"user",
             "Authorization":"Bearer "+userInfo.signInUserSession.idToken.jwtToken
           },
         }
@@ -54,6 +55,7 @@ function TodoList({userInfo}:{userInfo:any}) {
           method: "put",
           url: `https://registergeerd.hasura.app/api/rest/insertTodo/${newTodo.text}`,
           headers: {
+            "x-hasura-role":"user",
             "Content-Type": "application/json",
             "Authorization":"Bearer "+userInfo.signInUserSession.idToken.jwtToken
           },
@@ -76,6 +78,7 @@ function TodoList({userInfo}:{userInfo:any}) {
         "https://registergeerd.hasura.app/api/rest/deleteTodos/" + id,
         {
           headers: {
+            "x-hasura-role":"user",
             "Authorization":"Bearer "+userInfo.signInUserSession.idToken.jwtToken
           },
         }
@@ -122,8 +125,8 @@ function TodoList({userInfo}:{userInfo:any}) {
 
   return (
 <>
-  <Link href="/test">Go to page 2</Link>
-  <button className="m-4 border-2 rounded-lg" onClick={logoutDir}>Logout</button>
+  <button className="m-4 border-2 p-1 rounded-lg" onClick={logoutDir}>Logout</button>
+  {userInfo && userInfo.signInUserSession.idToken.payload["user-role"]==="admin"?<Link className="underline" href="/admin">ADMIN</Link>:<></>}
     {todoPageComp}
     </>
   );

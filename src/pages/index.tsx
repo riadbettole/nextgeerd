@@ -3,7 +3,8 @@ import AppRegister from "../component/appRegister";
 import { useEffect, useState } from "react";
 import TodoList from "../component/todo";
 import Head from "next/head";
-import Script from "next/script";
+
+
 
 function Home() {
   const [user, setUser] = useState<any | null>();
@@ -11,6 +12,15 @@ function Home() {
   useEffect(() => {
     checkUser();
   }, []);
+
+  // useEffect(() => {
+    // if(user) console.log(user.getUserAttributes((e:any)=>{console.log(e)}))
+    // console.log(user)
+    // console.log(user.signInUserSession)
+    // console.log(user.signInUserSession.idToken.payload["https://hasura.io/jwt/claims"])
+    // const role = JSON.parse(user.signInUserSession.idToken.payload["https://hasura.io/jwt/claims"])["x-hasura-default-role"]
+    // console.log(role)
+  // }, [user]);
 
   useEffect(() => {
     Hub.listen("auth", () => {

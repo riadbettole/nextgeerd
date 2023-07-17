@@ -126,7 +126,7 @@ function TodoList({userInfo}:{userInfo:any}) {
   return (
 <>
   <button className="m-4 border-2 p-1 rounded-lg" onClick={logoutDir}>Logout</button>
-  {userInfo && userInfo.signInUserSession.idToken.payload["user-role"]==="admin"?<Link className="underline" href="/admin">ADMIN</Link>:<></>}
+  {userInfo && userInfo.signInUserSession.idToken.payload["custom:role"]==="admin"?<Link className="underline" href="/admin">ADMIN</Link>:<></>}
     {todoPageComp}
     </>
   );
